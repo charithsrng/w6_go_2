@@ -1,3 +1,5 @@
+// Author -- Charith Suranga 2024-10-03 //
+
 package main
 
 import (
@@ -11,20 +13,21 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Grocery struct (Model)
+// Grocery struct
 type Grocery struct {
-	ID       int     `json:"id"`
-	Name     string  `json:"name"`
-	Category string  `json:"category"`
-	Quantity int     `json:"quantity"`
-	Price    float64 `json:"price"`
+	ID        int     `json:"id"`
+	Name      string  `json:"name"`
+	Category  string  `json:"category"`
+	Quantity  int     `json:"quantity"`
+	Price     float64 `json:"price"`
+	Storename string  `json:"Storename"`
 	//Expiery  time.Time `json:"date"`
 }
 
 // In-memory database
 var groceries []Grocery
 
-// Create a new grocery item (POST /groceries)
+// Create a new grocery item
 func createGrocery(w http.ResponseWriter, r *http.Request) {
 	var grocery Grocery
 	json.NewDecoder(r.Body).Decode(&grocery)
@@ -34,13 +37,13 @@ func createGrocery(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(grocery)
 }
 
-// Get all groceries (GET /groceries)
+// Get all groceries
 func getGroceries(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(groceries)
 }
 
-// Get a single grocery item by ID (GET /groceries/{id})
+// Get a single grocery item by ID
 func getGrocery(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
@@ -54,7 +57,7 @@ func getGrocery(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Grocery not found", http.StatusNotFound)
 }
 
-// Update a grocery item (PUT /groceries/{id})
+// Update a grocery item
 func updateGrocery(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
@@ -66,6 +69,7 @@ func updateGrocery(w http.ResponseWriter, r *http.Request) {
 			groceries[i].Category = updatedGrocery.Category
 			groceries[i].Quantity = updatedGrocery.Quantity
 			groceries[i].Price = updatedGrocery.Price
+			groceries[i].Storename = updatedGrocery.Storename
 			//groceries[i].Expiery = updatedGrocery.Expiery
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(groceries[i])
@@ -75,7 +79,7 @@ func updateGrocery(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Grocery not found", http.StatusNotFound)
 }
 
-// Delete a grocery item (DELETE /groceries/{id})
+// Delete a grocery item
 func deleteGrocery(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
